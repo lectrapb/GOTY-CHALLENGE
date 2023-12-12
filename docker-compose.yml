@@ -1,0 +1,45 @@
+version: '3.3'
+services:
+  backend_bfs:
+    image: gporras/goty-bsf:latest
+    ports:
+      - '5000:5000'
+    environment:
+      - SPRING_PROFILES_ACTIVE=prod
+      - GAMES_HOST=http://mocksserver:3100
+    networks:
+      - test-server-net  
+  mocksserver:
+    image: mocksserver/main
+    ports:
+      - "3100:3100"
+      - "3110:3110"
+    volumes:
+      - ./server-mock/mocks:/input/mocks  # Mount the 'mocks' directory
+      - ./server-mock/mocks.config.js:/input/mocks.config.js
+    environment:
+      - MOCKS_PATH=/input  
+    networks:
+      - test-server-net 
+    command: npm start
+  goty-front:
+    image: gporras/goty-front:latest
+    ports:
+      - "4200:80"
+    environment:
+      - URL=http://localhost:5000 #Set url backend api
+    networks:
+      - test-server-net
+  # k6:
+  #   image: loadimpact/k6:0.48.0 
+  #   ports:
+  #     - "6565:6565"
+  #   volumes:
+  #     - ./shared/k6:/src
+  #   extra_hosts:
+  #     - "host.docker.internal:host-gateway"
+  #   command: run /src/test.js
+
+networks:
+  test-server-net:
+    driver: bridge
