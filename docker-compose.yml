@@ -30,15 +30,15 @@ services:
       - URL=http://localhost:5000 #Set url backend api
     networks:
       - test-server-net
-  # k6:
-  #   image: loadimpact/k6:0.48.0 
-  #   ports:
-  #     - "6565:6565"
-  #   volumes:
-  #     - ./shared/k6:/src
-  #   extra_hosts:
-  #     - "host.docker.internal:host-gateway"
-  #   command: run /src/test.js
+  k6:
+    image: loadimpact/k6:0.48.0 
+    ports:
+      - "6565:6565"
+    volumes:
+      - ./shared/k6:/src
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    command: run /src/test.js
 
 networks:
   test-server-net:
