@@ -27,9 +27,9 @@
 These commands allow deploy the main components of the project: 
 
 1. **Enable Backend and Frontend** 
-+ docker-compose up -d  backend_bfs  mocksserver goty-front.<br>
++ docker-compose up -d influxdb backend_bfs mocksserver goty-front <br>
 2. **Disable Backend and Frontend** 
-+ docker-compose stop   backend_bfs  mocksserver goty-front.<br> 
++ docker-compose stop influxdb backend_bfs  mocksserver goty-front <br> 
 3. **Execute performance tests**
 + docker-compose run --rm k6 <br>
 
