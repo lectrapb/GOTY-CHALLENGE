@@ -1,5 +1,18 @@
 version: '3.3'
 services:
+  mocksserver:
+    image: mocksserver/main
+    ports:
+      - "3100:3100"
+      - "3110:3110"
+    volumes:
+      - ./shared/server-mock/mocks:/input/mocks  # Mount the 'mocks' directory
+      - ./shared/server-mock/mocks.config.js:/input/mocks.config.js
+    environment:
+      - MOCKS_PATH=/input  
+    networks:
+      - test-server-net 
+    command: npm start
   backend_bfs:
     image: gporras/goty-bsf:latest
     ports:
@@ -9,19 +22,7 @@ services:
       - GAMES_HOST=http://mocksserver:3100
     networks:
       - test-server-net  
-  mocksserver:
-    image: mocksserver/main
-    ports:
-      - "3100:3100"
-      - "3110:3110"
-    volumes:
-      - ./server-mock/mocks:/input/mocks  # Mount the 'mocks' directory
-      - ./server-mock/mocks.config.js:/input/mocks.config.js
-    environment:
-      - MOCKS_PATH=/input  
-    networks:
-      - test-server-net 
-    command: npm start
+  
   goty-front:
     image: gporras/goty-front:latest
     ports:
@@ -30,10 +31,18 @@ services:
       - URL=http://localhost:5000 #Set url backend api
     networks:
       - test-server-net
+  influxdb:
+    image: influxdb:1.8.2
+    ports:
+      - "8086:8086"
+    environment:
+      - INFLUXDB_DB=k6
   k6:
-    image: loadimpact/k6:0.48.0 
+    image: grafana/k6:0.48.0 
     ports:
       - "6565:6565"
+    environment:
+      - K6_OUT=influxdb=http://influxdb:8086/k6
     volumes:
       - ./shared/k6:/src
     extra_hosts:
