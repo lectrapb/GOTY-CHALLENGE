@@ -1,5 +1,5 @@
 # The Game Of Year 
-### Backend for frontend(BFS)
+### Backend for frontend(BFF)
  ![Diagram](./documentation/images/main-chart.jpeg)
 - The most important video game webpage wants to know the best Video Game Of the Year (GOTY), so it builds an online survey to see the winner. It shows some candidates to get the awards, and on the first page, it offers a bar chart with some voting trends. 
 
@@ -9,7 +9,7 @@
 ## The Challenge 
 * You will by build a web service to fix the issue of the current, web service. you'll have to do two endpoints, the first one get all the games and the second one get the games asocited by candidate.  
 
- ![Diagram](./documentation/images/arquitecture.png)
+ ![Diagram](./documentation/images/arquitecture.jpeg)
 ## Rules
 1.  You can use the first functionality (get all) only to fill the content of the first view of the votation page; any other business logic will be allowed. 
 
@@ -27,11 +27,15 @@
 These commands allow deploy the main components of the project: 
 
 1. **Enable Backend and Frontend** 
-+ docker-compose up -d influxdb backend_bfs mocksserver goty-front <br>
-2. **Disable Backend and Frontend** 
++ docker-compose up -d influxdb backend_bff mocksserver goty-front grafana <br>
+2. **Disable BFF service** 
++ docker-compose up -d influxdb  mocksserver goty-front grafana <br>
+3. **Disable Backend and Frontend** 
 + docker-compose stop influxdb backend_bfs  mocksserver goty-front <br> 
-3. **Execute performance tests**
+4. **Execute performance tests**
 + docker-compose run --rm k6 <br>
+5. **Show trend results**
++ http://localhost:3006/d/fd5b334f/evaluation-dashboard?orgId=1&refresh=30s <br>
 
 
 

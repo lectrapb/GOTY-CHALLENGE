@@ -13,6 +13,7 @@ services:
     networks:
       - test-server-net 
     command: npm start
+
   backend_bfs:
     image: gporras/goty-bsf:latest
     ports:
@@ -28,15 +29,41 @@ services:
     ports:
       - "4200:80"
     environment:
-      - URL=http://localhost:5000 #Set url backend api
+      - URL=http://localhost:5000 
     networks:
       - test-server-net
+
   influxdb:
-    image: influxdb:1.8.2
+    image: influxdb:1.8.3
     ports:
       - "8086:8086"
     environment:
       - INFLUXDB_DB=k6
+      - INFLUXDB_ADMIN_ENABLED=true
+      - INFLUXDB_ADMIN_USER=admin
+      - INFLUXDB_ADMIN_PASSWORD=adminpass
+      - INFLUXDB_USER=user-k6
+      - INFLUXDB_USER_PASSWORD=user-k6-pass
+    networks:
+      - test-server-net
+  grafana:
+    image: grafana/grafana-enterprise:10.0.10
+    container_name: grafana
+    environment:
+      - GF_LOG_LEVEL=info
+    ports:
+      - '3006:3000'
+    volumes:
+      - ./shared/grafana:/etc/grafana/provisioning/
+      - ./shared/grafana/custom.ini:/etc/grafana/grafana.ini
+      - 'grafana_storage:/var/lib/grafana'
+  
+
+    command: ["--config", "/etc/grafana/grafana.ini"]
+    depends_on:
+      - influxdb
+    networks:
+      - test-server-net
   k6:
     image: grafana/k6:0.48.0 
     ports:
@@ -47,7 +74,13 @@ services:
       - ./shared/k6:/src
     extra_hosts:
       - "host.docker.internal:host-gateway"
+    networks:
+      - test-server-net
     command: run /src/test.js
+
+
+volumes:
+  grafana_storage: {}
 
 networks:
   test-server-net:
