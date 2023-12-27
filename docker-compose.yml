@@ -14,7 +14,7 @@ services:
       - test-server-net 
     command: npm start
 
-  backend_bfs:
+  backend_bff:
     image: gporras/goty-bsf:latest
     ports:
       - '5000:5000'
